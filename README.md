@@ -8,7 +8,7 @@ A real-time neighborhood safety dashboard for DePaul. The app scrapes crime and 
 News Websites ──> Scrape/Fetch raw articles ──> Store in raw_news table
                                                        │
                                                        ▼
-                                              Send to LLM for parsing
+                                              Send to SQLite-AI for parsing (LLM runs inside DB via SQL)
                                                        │
                                                        ▼
                                               LLM extracts structured data:
@@ -35,7 +35,7 @@ News Websites ──> Scrape/Fetch raw articles ──> Store in raw_news table
 | Backend  | Flask                |
 | Database | SQLite (`incidents.db`)          |
 | Data     | news scraping          |
-| AI       | LLM for parsing raw news → structured incident data |
+| AI       | [SQLite-AI](https://github.com/sqliteai/sqlite-ai) — on-device LLM inference via SQL queries |
 
 ## Database Schema
 

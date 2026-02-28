@@ -1,6 +1,6 @@
-# SafeRoute Chicago
+# SafeBlue DePaul
 
-A real-time neighborhood safety dashboard for Chicago. The app scrapes crime and incident data from news websites, converts it to structured JSON, feeds it through an LLM to extract key details (location, severity, type), stores the results in a database, and displays them on an interactive map.
+A real-time neighborhood safety dashboard for DePaul. The app scrapes crime and incident data from news websites, converts it to structured JSON, feeds it through an LLM to extract key details (location, severity, type, etc), stores the results in a database, and displays them on an interactive map.
 
 ## How It Works
 
@@ -32,9 +32,9 @@ News Websites ──> Scrape/Fetch raw articles ──> Store in raw_news table
 | Layer    | Tech                             |
 |----------|----------------------------------|
 | Frontend | React 19, Leaflet, React-Leaflet |
-| Backend  | Flask, Flask-CORS                |
+| Backend  | Flask                |
 | Database | SQLite (`incidents.db`)          |
-| Data     | NewsAPI / news scraping          |
+| Data     | news scraping          |
 | AI       | LLM for parsing raw news → structured incident data |
 
 ## Database Schema

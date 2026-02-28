@@ -1,10 +1,6 @@
-# Database setup and helpers (SQLite)
-import sqlite3
+import sqlitecloud
 import json
 from datetime import datetime
-import sqlitecloud
-
-DB_NAME = "incidents.db"
 
 class database():
     def __init__(self):
@@ -41,7 +37,7 @@ class database():
                 FOREIGN KEY (raw_news_id) REFERENCES raw_news(id)
             )
         """)
-        # sqlitecloud usually auto-commits, but this ensures it's saved
+
         conn.commit() 
         conn.close()
 
@@ -49,9 +45,8 @@ class database():
         conn = self.get_connection()
         cursor = conn.cursor()
         
-        # Wrapping in a list of tuples: [(val1, val2)]
-        params = [(source, json.dumps(raw_json))]
-        
+        # Pass a single tuple, not a list
+        params = (source, json.dumps(raw_json))
         cursor.execute("INSERT INTO raw_news (source, raw_json) VALUES (?, ?)", params)
         
         news_id = cursor.lastrowid
@@ -63,9 +58,7 @@ class database():
         conn = self.get_connection()
         cursor = conn.cursor()
         
-        # The 8 parameters for your incident
-        params = [(raw_news_id, latitude, longitude, hour, incident_level, incident_type, description, location_name)]
-        
+        params = (raw_news_id, latitude, longitude, hour, incident_level, incident_type, description, location_name)
         cursor.execute("""
             INSERT INTO parsed_incidents (raw_news_id, latitude, longitude, hour, incident_level, incident_type, description, location_name)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -79,7 +72,6 @@ class database():
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM parsed_incidents")
         
-        # Mapping to dictionaries so your team doesn't struggle with index numbers
         columns = [column[0] for column in cursor.description]
         results = [dict(zip(columns, row)) for row in cursor.fetchall()]
         

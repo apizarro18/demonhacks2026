@@ -2,13 +2,13 @@
 import sqlite3
 import json
 from datetime import datetime
+import sqlitecloud
 
 DB_NAME = "incidents.db"
 
 def get_connection():
-    conn = sqlite3.connect(DB_NAME)
-    conn.row_factory = sqlite3.Row
-    return conn
+    conn = sqlitecloud.connect("sqlitecloud://ctdsjulovk.g5.sqlite.cloud:8860/incidents.db?apikey=hwbtOOtrpqCjTa1MYk4Vk05V9nlwRjGpIwsWBh6gY0M")
+    return conn                       
 
 def create_tables():
     conn = get_connection()

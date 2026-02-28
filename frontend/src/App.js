@@ -8,27 +8,23 @@ import {
 } from 'react-leaflet';
 import { useEffect } from 'react';
 
-function FixMapSize() {
+function MapCompnent() {
   const map = useMap();
-  useEffect(() => {
-    map.invalidateSize();
-  }, [map]);
   return null;
 }
 
 function App() {
   return (
     <MapContainer
-      center={[51.505, -0.09]}
-      zoom={13}
+      center={[41.92458, -87.650722]}
+      zoom={15}
       style={{ height: "100vh", width: "100%" }}
     >
-      <FixMapSize />
       <TileLayer
         attribution="&copy; OpenStreetMap contributors"
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Marker position={[51.505, -0.09]}>
+      <Marker position={[41.92458, -87.650722]}>
         <Popup>Hello</Popup>
       </Marker>
     </MapContainer>

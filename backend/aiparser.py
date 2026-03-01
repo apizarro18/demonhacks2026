@@ -1,15 +1,15 @@
 import json
-from database import database # Your class from earlier
+from database import database
+from google import genai
 
-# You'll need an LLM library (e.g., 'google-generativeai' or 'openai')
-import google.generativeai as genai 
-
+# -----------------------------
+# AI Processor
+# -----------------------------
 class AIProcessor:
     def __init__(self, api_key):
-        genai.configure(api_key="AIzaSyBO9nJvsdOwaQSYDZGDKa5sKptVYzq0S14")
-        self.model = genai.GenerativeModel('gemini-2.5-flash')
+        self.client = genai.Client(api_key=api_key)
 
-    def parse_article(self, raw_text):
+    def parse_article(self, article_dict):
         prompt = f"""
 Extract crime incident details from this news article.
 
@@ -20,39 +20,87 @@ Instructions:
 - latitude & longitude: If exact coordinates aren't mentioned, infer from location_name or use null
 - hour: Extract from timestamp if available, otherwise use 12 (noon) as default
 - incident_level: Classify as "Low", "Med", or "High" based on severity
-- incident_type: e.g., "robbery", "assault", "theft", "burglary"
-- description: Concise summary of what happened
-- location_name: Specific street, building, or area name
+- incident_type: e.g., "robbery", "assault", "theft", "burglary", "homicide", "DUI"
+- description: Concise summary of what happened (1 sentence)
+- location_name: Specific city, street, building, or area name
 
-Article:
-{raw_text}
+ARTICLE DATA:
+Title: {article_dict.get('title','')}
+Link: {article_dict.get('link','')}
+Published: {article_dict.get('published','')}
 
 Return ONLY valid JSON with the structure shown in the example above.
-        """
-        response = self.model.generate_content(prompt)
-        # Convert AI string response back to a Python Dictionary
-        return json.loads(response.text.strip('`json\n '))
+"""
 
-# --- THE WORKFLOW ---
-db = database()
-processor = AIProcessor(api_key="AIzaSyBO9nJvsdOwaQSYDZGDKa5sKptVYzq0S14")
+        try:
+            response = self.client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt
+            )
 
-# 1. Get a raw article that hasn't been parsed yet
-# (You might need to add a 'SELECT' method to your database class)
-raw_articles = db.get_unparsed_news() 
+            text = response.text.strip()
 
-for news in raw_articles:
-    # news[0] is ID, news[2] is the raw_json text
-    data = processor.parse_article(news[2])
-    
-    # 2. Fill the parsed_incidents table
-    db.insert_parsed_incident(
-        raw_news_id=news[0],
-        latitude=data['latitude'],
-        longitude=data['longitude'],
-        hour=data['hour'],
-        incident_level=data['incident_level'],
-        incident_type=data['incident_type'],
-        description=data['description'],
-        location_name=data['location_name']
-    )
+            if text.startswith("```"):
+                text = text.replace("```json", "").replace("```", "").strip()
+
+            return json.loads(text)
+
+        except Exception as e:
+            print("AI parsing failed:", e)
+            return None
+
+
+# -----------------------------
+# Main Pipeline
+# -----------------------------
+def run():
+    db = database()
+    processor = AIProcessor(api_key="AIzaSyBO9nJvsdOwaQSYDZGDKa5sKptVYzq0S14")
+
+    conn = db.get_connection()
+    cursor = conn.cursor()
+
+    # Only fetch raw_news that have NOT been parsed yet
+    cursor.execute("""
+        SELECT r.id, r.raw_json
+        FROM raw_news r
+        LEFT JOIN parsed_incidents p
+        ON r.id = p.raw_news_id
+        WHERE p.raw_news_id IS NULL
+    """)
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    print(f"Found {len(rows)} unparsed articles.\n")
+
+    for raw_news_id, raw_json in rows:
+        try:
+            article = json.loads(raw_json)
+        except:
+            continue
+
+        print("Processing:", article.get("title"))
+
+        structured = processor.parse_article(article)
+        if not structured:
+            continue
+
+        db.insert_parsed_incident(
+            raw_news_id=raw_news_id,
+            latitude=structured.get("latitude"),
+            longitude=structured.get("longitude"),
+            hour=structured.get("hour"),
+            incident_level=structured.get("incident_level"),
+            incident_type=structured.get("incident_type"),
+            description=structured.get("description"),
+            location_name=structured.get("location_name"),
+        )
+
+        print("Inserted.\n")
+
+    print("Done.")
+
+
+if __name__ == "__main__":
+    run()

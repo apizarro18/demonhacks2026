@@ -12,18 +12,18 @@ export default function Heatmap({ points, flyAnimationActive }) {
 
     // Create the heatmap layer
     const heatLayer = L.heatLayer(points, {
-      radius: 30,       // slightly bigger for smoother edges
-      blur: 30,         // more blur so new points fade in naturally
+      radius: 30,       
+      blur: 30,         
       maxZoom: 17,
-      minOpacity: 0.05, // slightly more subtle base
+      minOpacity: 0.05, 
       gradient: {
-        0.2: "rgba(0,0,255,0.3)",
-        0.4: "rgba(0,255,0,0.3)",
-        0.6: "rgba(255,255,0,0.4)",
-        0.8: "rgba(255,165,0,0.5)",
-        1.0: "rgba(255,0,0,0.6)"
-      },
-      updateWhenIdle: false, // redraw while moving
+        0.2: "rgba(255, 0, 0, 0.3)",     // Pure Red
+        0.4: "rgba(255, 90, 0, 0.4)",    // Red-Orange
+        0.6: "rgba(255, 150, 0, 0.5)",   // Orange
+        0.8: "rgba(255, 220, 0, 0.6)",   // Yellow
+        1.0: "rgba(255, 255, 255, 0.8)"  // White hot
+      }, // <-- This comma or bracket right here is usually what goes missing!
+      updateWhenIdle: false, 
       updateInterval: 0
     }).addTo(map);
 

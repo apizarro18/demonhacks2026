@@ -85,10 +85,15 @@ demonhacks2026/
 ```bash
 cd backend
 pip install -r requirements.txt
-python database.py    # creates incidents.db
+
+# The connection string is read from the environment variable
+# `SQL_URL`. A sample value is stored in the `backend/env` file, and the
+# code automatically loads it using `python-dotenv`. You can instead set
+# the variable yourself or rename `env` to `.env` if you prefer.
+
+python database.py    # creates incidents.db (will load `SQL_URL`)
 python app.py         # starts Flask on http://localhost:5000
 ```
-
 ### Frontend
 ```bash
 cd frontend

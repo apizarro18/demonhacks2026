@@ -56,7 +56,7 @@ export default function Settings({ heatmapVisible, setHeatmapVisible }) {
         >
           ←
         </button>
-        <span style={styles.navTitle}>Settings</span>
+      <span style={styles.navTitle}>⚙️Settings</span>
         <div style={{ width: 24 }} />
       </div>
 
@@ -112,7 +112,10 @@ const styles = {
     minHeight: '100vh',
     backgroundColor: '#0E2A47',
     fontFamily: 'Inter, system-ui, sans-serif',
+    paddingBottom: '40px',     // <-- Adds space inside the container so the card margin doesn't leak out
+    boxSizing: 'border-box',   // <-- Ensures the padding doesn't make the page extend past 100vh
   },
+  // ... rest of your styles stay exactly the same
   navbar: {
     height: '60px',
     display: 'flex',

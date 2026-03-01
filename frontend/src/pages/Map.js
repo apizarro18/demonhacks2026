@@ -226,7 +226,7 @@ function Map() {
         🚨 Emergency Number: 911
       </a>
       <a 
-        href="settings.html" 
+        href="settings" 
         style={{
           position: "fixed",
           bottom: "170px",
@@ -244,7 +244,7 @@ function Map() {
           fontFamily: "Arial, sans-serif"
         }}
       >
-        ⚙️ Settings:
+        ⚙️ Settings
       </a>
 
     </div>

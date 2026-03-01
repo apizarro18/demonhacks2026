@@ -100,6 +100,15 @@ def run():
             if not structured:
                 continue
 
+            if isinstance(structured, list):
+                if not structured:
+                    continue
+                structured = structured[0]
+
+            if not isinstance(structured, dict):
+                print("Invalid AI format returned. Skipping.")
+                continue
+
             db.insert_parsed_incident(
                 raw_news_id=raw_news_id,
                 latitude=structured.get("latitude"),

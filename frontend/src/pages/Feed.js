@@ -1,14 +1,4 @@
-import { useEffect, useState } from 'react';
-
-function Feed() {
-  const [alerts, setAlerts] = useState([]);
-
-  useEffect(() => {
-    fetch("http://localhost:5000/alerts")
-      .then(res => res.json())
-      .then(data => setAlerts(data))
-      .catch(err => console.error(err));
-  }, []);
+function Feed({ alerts = [] }) {
 
   return (
     <div style={styles.container}>

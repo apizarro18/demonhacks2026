@@ -117,7 +117,8 @@ function Map() {
   const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/alerts")
+    const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
+    fetch(`${apiUrl}/alerts`)
       .then(res => res.json())
       .then(data => setAlerts(data))
       .catch(err => console.error("Failed to fetch alerts:", err));
@@ -180,7 +181,7 @@ function Map() {
       </MapContainer> 
 
       {/* 2. The Live Feed */}
-      <Feed />
+      <Feed alerts={alerts} />
       
       {/* 3. The Public Safety Button (Fixed to screen) */}
       <a 

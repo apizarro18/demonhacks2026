@@ -12,6 +12,9 @@ FEEDS = {
     "ABC7 Chicago": "https://abc7chicago.com/feed/?section=news/crime",
     "WGN9": "https://wgntv.com/category/news/crime/feed/",
     "FOX32 Chicago": "https://www.fox32chicago.com/category/news/crime/rss",
+    "CWB Chicago": "https://cwbchicago.com/feed/",
+    "Block Club Chicago": "https://blockclubchicago.org/feed/",
+    "Sun-Times Crime": "https://chicago.suntimes.com/rss/crime/index.xml",
     "Google News Chicago Crime": "https://news.google.com/rss/search?q=Chicago+crime"
 }
 

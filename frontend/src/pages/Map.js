@@ -1,5 +1,5 @@
 import 'leaflet/dist/leaflet.css';
-import { MapContainer, TileLayer, Marker, Popup, Polygon, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
 import { useEffect, useState } from 'react';
 import '../css/Map.css';
 import Feed from './Feed';
@@ -18,33 +18,6 @@ function Map() {
     shadowSize: [48, 48], 
     shadowAnchor: [24, 40] 
   });
-
-  const[incidents, setIncidents] = useState([]);
-
-  useEffect(() => { 
-    const loadIncidents = async () => {
-      try {
-        const connectionString = process.env.REACT_APP_SQL_URL;
-
-        if (!connectionString) {
-          console.error("SQL_URL is missing from the .env file!");
-          return;
-        }
-
-        const db = new Database(connectionString);
-        
-        const results = await db.sql("SELECT * FROM parsed_incidents ORDER BY id ASC");
-
-        setIncidents(results);
-      } catch (err) {
-        console.error("Connection to database has failed!", err);
-      }
-    };
-
-    loadIncidents();
-  }, []); 
-
-
 
   // 1. University of Chicago (UChicago) — 24 points
   const uchicagoBoundary = [
@@ -253,7 +226,7 @@ function Map() {
         🚨 Emergency Number: 911
       </a>
       <a 
-        href="settings.html" 
+        href="settings" 
         style={{
           position: "fixed",
           bottom: "170px",
@@ -271,7 +244,7 @@ function Map() {
           fontFamily: "Arial, sans-serif"
         }}
       >
-        ⚙️ Settings:
+        ⚙️ Settings
       </a>
 
     </div>

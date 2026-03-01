@@ -25,6 +25,7 @@ Example output:
 {{"latitude": 40.7128, "longitude": -74.0060, "hour": 14, "incident_level": "High", "incident_type": "robbery", "description": "Armed robbery at corner store", "location_name": "5th Ave & 42nd St"}}
 
 Instructions:
+- if duplicate incidents are mentioned from different new sources, only create one entry for that incident, using the most specific location and time details available across all sources.
 - latitude & longitude: If exact coordinates aren't mentioned, infer from location_name
 - hour: Extract from timestamp if available, otherwise use 12 (noon) as default
 - incident_level: Classify as "Low", "Med", or "High" based on severity

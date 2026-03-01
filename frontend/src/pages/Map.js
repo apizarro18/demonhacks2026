@@ -157,8 +157,8 @@ function Map() {
       <MapContainer
         center={[41.8700, -87.6350]}
         zoom={12}
-        minZoom={11} /* PREVENTS zooming out too far (stops the shrinking) */
-        maxZoom={18} /* PREVENTS zooming in too close */
+        minZoom={10} /* PREVENTS zooming out too far (stops the shrinking) */
+        maxZoom={2} /* PREVENTS zooming in too close */
         style={{ height: "100%", width: "100%", zIndex: 1 }}
       >
         <TileLayer
@@ -236,6 +236,27 @@ function Map() {
         }}
       >
         🚨 Emergency Number: 911
+      </a>
+      <a 
+        href="settings.html" 
+        style={{
+          position: "fixed",
+          bottom: "170px",
+          right: "20px",
+          zIndex: 99999, /* Maximum z-index to guarantee visibility */
+          backgroundColor: "#7e5a5a",
+          color: "white",
+          padding: "12px 18px",
+          borderRadius: "8px",
+          textDecoration: "none",
+          fontWeight: "bold",
+          fontSize: "16px",
+          boxShadow: "0 4px 6px rgba(0,0,0,0.3)",
+          display: "block",
+          fontFamily: "Arial, sans-serif"
+        }}
+      >
+        ⚙️ Settings:
       </a>
 
     </div>

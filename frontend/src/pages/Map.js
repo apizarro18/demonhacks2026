@@ -20,6 +20,33 @@ function Map() {
     shadowAnchor: [24, 40] 
   });
 
+  const[incidents, setIncidents] = useState([]);
+
+  useEffect(() => { 
+    const loadIncidents = async () => {
+      try {
+        const connectionString = process.env.REACT_APP_SQL_URL;
+
+        if (!connectionString) {
+          console.error("SQL_URL is missing from the .env file!");
+          return;
+        }
+
+        const db = new Database(connectionString);
+        
+        const results = await db.sql("SELECT * FROM parsed_incidents ORDER BY id ASC");
+
+        setIncidents(results);
+      } catch (err) {
+        console.error("Connection to database has failed!", err);
+      }
+    };
+
+    loadIncidents();
+  }, []); 
+
+
+
   // 1. University of Chicago (UChicago) — 24 points
   const uchicagoBoundary = [
     [41.7943, -87.5988], [41.7943, -87.6013], [41.7960, -87.6013], [41.7960, -87.5990],
@@ -108,30 +135,12 @@ function Map() {
 
   const [alerts, setAlerts] = useState([]);
 
-   useEffect(() => { 
-    const loadIncidents = async () => {
-      try {
-        const connectionString = process.env.REACT_APP_SQL_URL;
-
-        if (!connectionString) {
-          console.error("SQL_URL is missing from the .env file!");
-          return;
-        }
-
-        const db = new Database(connectionString);
-        
-        const results = await db.sql("SELECT * FROM parsed_incidents ORDER BY id ASC");
-        console.log("Check this first row:", results[0]); 
-        setAlerts(results);
-
-        setAlerts(results);
-      } catch (err) {
-        console.error("Connection to database has failed!", err);
-      }
-    };
-
-    loadIncidents();
-  }, []); 
+  useEffect(() => {
+    fetch("http://localhost:5000/alerts")
+      .then(res => res.json())
+      .then(data => setAlerts(data))
+      .catch(err => console.error(err));
+  }, []);
 
   const labelIcon = (text) =>
     L.divIcon({
@@ -143,34 +152,22 @@ function Map() {
 
   return (
     <div style={{ height: "100vh", width: "100vw", position: "relative" }}> 
-
+      
       {/* 1. The Map */}
       <MapContainer
         center={[41.8700, -87.6350]}
         zoom={12}
-        minZoom={10} /* PREVENTS zooming out too far (stops the shrinking) */
-        maxZoom={2} /* PREVENTS zooming in too close */
         style={{ height: "100%", width: "100%", zIndex: 1 }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-            {alerts
-              .filter(alert => alert.latitude && alert.longitude) // Safety: Skip rows with missing coords
-              .map((alert, index) => (
-                <Marker 
-                  icon={mapIcon} 
-                  key={alert.id || index} 
-                  position={[alert.latitude, alert.longitude]} // Corrected column names
-                >
-                  <Popup>
-                    <strong>{alert.incident_type}</strong><br/>
-                    {alert.description}
-                  </Popup>
-                </Marker>
-            ))}
-
+        {alerts.map((alert) => (
+          <Marker icon={mapIcon} key={alert.id} position={[alert.lat, alert.lng]}>
+            <Popup>{alert.message}</Popup>
+          </Marker>
+        ))}
         {campuses.map((campus, idx) => (
           <Polygon
             key={`poly-${idx}`}

@@ -1,7 +1,6 @@
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Marker, Popup, Polygon, useMap } from 'react-leaflet';
 import { useEffect, useState } from 'react';
-import { Database } from '@sqlitecloud/drivers'
 import '../css/Map.css';
 import Feed from './Feed';
 import L from 'leaflet';
@@ -148,7 +147,7 @@ function Map() {
     fetch("http://localhost:5000/alerts")
       .then(res => res.json())
       .then(data => setAlerts(data))
-      .catch(err => console.error(err));
+      .catch(err => console.error("Failed to fetch alerts:", err));
   }, []);
 
   const labelIcon = (text) =>
@@ -172,10 +171,19 @@ function Map() {
           attribution='&copy; <a href="https://www.openstreetmap.org">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {alerts.map((alert) => (
-          <Marker icon={mapIcon} key={alert.id} position={[alert.lat, alert.lng]}>
-            <Popup>{alert.message}</Popup>
-          </Marker>
+        {alerts
+          .filter(alert => alert.lat && alert.lng)
+          .map((alert, index) => (
+            <Marker
+              icon={mapIcon}
+              key={alert.id || index}
+              position={[alert.lat, alert.lng]}
+            >
+              <Popup>
+                <strong>{alert.type}</strong><br/>
+                {alert.message}
+              </Popup>
+            </Marker>
         ))}
         {campuses.map((campus, idx) => (
           <Polygon

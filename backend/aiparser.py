@@ -1,12 +1,19 @@
 import json
 from database import database
 from google import genai
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 # -----------------------------
 # AI Processor
 # -----------------------------
 class AIProcessor:
-    def __init__(self, api_key):
+    def __init__(self):
+        api_key = os.getenv("GEMINI_KEY")
+        if not api_key:
+            raise ValueError("GEMINI_KEY not found in .env file")
+
         self.client = genai.Client(api_key=api_key)
 
     def parse_article(self, article_dict):

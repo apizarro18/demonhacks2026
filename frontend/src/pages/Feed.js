@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-function Feed() {
-  const [alerts, setAlerts] = useState([]);
+function Feed({ alerts = [], onAlertClick }) {
+  const [hoveredIndex, setHoveredIndex] = useState(null);
 
-  useEffect(() => {
-    fetch("http://localhost:5000/alerts")
-      .then(res => res.json())
-      .then(data => setAlerts(data))
-      .catch(err => console.error(err));
-  }, []);
+  const handleClick = (alert) => {
+    if (alert.lat && alert.lng && onAlertClick) {
+      onAlertClick({ lat: alert.lat, lng: alert.lng });
+    }
+  };
+
+  const isClickable = (alert) => Boolean(alert.lat && alert.lng && onAlertClick);
 
   return (
     <div style={styles.container}>
@@ -17,12 +18,25 @@ function Feed() {
       {alerts.length === 0 ? (
         <p style={styles.empty}>No active alerts</p>
       ) : (
-        alerts.map((alert, index) => (
-          <div key={index} style={styles.alert}>
-            <div style={styles.timestamp}>{alert.timestamp}</div>
-            <div>{alert.message}</div>
-          </div>
-        ))
+        alerts.map((alert, index) => {
+          const clickable = isClickable(alert);
+          return (
+            <div
+              key={index}
+              style={{
+                ...styles.alert,
+                ...(clickable ? styles.clickable : {}),
+                ...(clickable && hoveredIndex === index ? styles.hovered : {}),
+              }}
+              onClick={() => handleClick(alert)}
+              onMouseEnter={() => clickable && setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+            >
+              <div style={styles.timestamp}>{alert.timestamp}</div>
+              <div>{alert.message}</div>
+            </div>
+          );
+        })
       )}
     </div>
   );
@@ -41,7 +55,7 @@ const styles = {
     borderRadius: "10px",
     padding: "12px",
     boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-    zIndex: 1000, // Important: above Leaflet tiles
+    zIndex: 1000,
     fontFamily: "Arial, sans-serif"
   },
   header: {
@@ -54,7 +68,14 @@ const styles = {
     padding: "8px",
     backgroundColor: "#f8f8f8",
     borderRadius: "6px",
-    fontSize: "14px"
+    fontSize: "14px",
+    transition: "background-color 0.15s ease"
+  },
+  clickable: {
+    cursor: "pointer"
+  },
+  hovered: {
+    backgroundColor: "#e2e6ea"
   },
   timestamp: {
     fontSize: "12px",

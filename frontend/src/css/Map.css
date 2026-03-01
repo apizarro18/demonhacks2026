@@ -1,3 +1,26 @@
+.public-safety-btn {
+  position: absolute;
+  bottom: 30px; 
+  right: 20px;
+  z-index: 9999; /* Super high z-index to guarantee it stays on top */
+  background-color: #c8102e; 
+  color: white;
+  padding: 12px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  transition: all 0.2s ease-in-out;
+  display: block; 
+}
+
+.public-safety-btn:hover {
+  background-color: #a00d25; 
+  transform: scale(1.05); 
+  color: white; 
+}
+
 .campus-label {
   background: white;              /* solid white background */
   color: #003366;                 /* dark blue text */

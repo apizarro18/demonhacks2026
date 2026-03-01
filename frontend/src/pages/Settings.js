@@ -29,6 +29,12 @@ export default function Settings({ heatmapVisible, setHeatmapVisible }) {
         vapidKey: "BGAaRzieRN5W29lRcJnGubCa08BmVmmApmXOaoZosQIzQEzIzbk0nUny0_NJ2QLG8ay7AukF-y8fd2achosxq9I"
       });
 
+      await fetch("http://localhost:5000/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token })
+      });
+      
       console.log("FCM Token:", token);
 
       setEnabled(true);

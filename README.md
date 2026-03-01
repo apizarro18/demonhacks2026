@@ -92,6 +92,13 @@ pip install -r requirements.txt
 # the variable yourself or rename `env` to `.env` if you prefer.
 
 python database.py    # creates incidents.db (will load `SQL_URL`)
+
+# the scraper script understands a `--reset-seq` flag that wipes the
+# autoincrement counters for both tables.  run this if you deleted rows by
+# hand and want new IDs to start back at 1:
+#
+#     python main.py --reset-seq
+
 python app.py         # starts Flask on http://localhost:5000
 ```
 ### Frontend

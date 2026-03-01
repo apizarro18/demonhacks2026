@@ -116,3 +116,48 @@ class database():
         """
         data = self.get_all_parsed_incidents()
         return json.dumps(data)
+
+    # ------------------------------------------------------------------
+    # utility methods
+    # ------------------------------------------------------------------
+    def reset_autoincrement(self, table_name: str, vacuum: bool = False) -> None:
+        """Reset the autoincrement counter for ``table_name``.
+
+        SQLite keeps the last ROWID it issued in the internal
+        ``sqlite_sequence`` table.  this method deletes that entry so the next
+        ``INSERT`` will start at ``1`` (or ``MAX(id)+1`` if there are still
+        rows present).
+
+        :param table_name: name of the table whose sequence should be reset
+        :param vacuum: if ``True`` run ``VACUUM`` after deleting the sequence.
+                       ``VACUUM`` rebuilds the database file and also resets
+                       the sequence, but it is a heavier operation and may
+                       lock the file for a short time.
+        :raises ValueError: if ``table_name`` is empty
+        """
+        if not table_name:
+            raise ValueError("table_name must be provided")
+
+        conn = self.get_connection()
+        cur = conn.cursor()
+        cur.execute("DELETE FROM sqlite_sequence WHERE name = ?", (table_name,))
+        conn.commit()
+        if vacuum:
+            # vacuum must be executed on a fresh connection in some versions of
+            # sqlite; reuse the existing one to keep things simple.
+            conn.execute("VACUUM")
+            conn.commit()
+        conn.close()
+
+    def vacuum(self) -> None:
+        """Run ``VACUUM`` on the current database.
+
+        This is useful after large deletes to reclaim space and reset
+        autoincrement sequences.  It locks the database while running, so it
+        should only be used during maintenance windows or when the app is not
+        under load.
+        """
+        conn = self.get_connection()
+        conn.execute("VACUUM")
+        conn.commit()
+        conn.close()

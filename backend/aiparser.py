@@ -10,8 +10,8 @@ load_dotenv()
 # -----------------------------
 class AIProcessor:
     def __init__(self):
-        api_key = os.getenv("GEMINI_KEY")
-        if not api_key:
+        self.api_key = os.getenv("GEMINI_KEY")
+        if not self.api_key:
             raise ValueError("GEMINI_KEY not found in .env file")
 
         self.client = genai.Client(api_key=api_key)
@@ -62,7 +62,7 @@ Return ONLY valid JSON with the structure shown in the example above.
 # -----------------------------
 def run():
     db = database()
-    processor = AIProcessor(api_key="AIzaSyBO9nJvsdOwaQSYDZGDKa5sKptVYzq0S14")
+    processor = AIProcessor(self.api_key)
 
     conn = db.get_connection()
     cursor = conn.cursor()

@@ -1,13 +1,16 @@
 import sqlitecloud
 import json
 from datetime import datetime
+import os
 
 class database():
     def __init__(self):
-        self.connection_string = "sqlitecloud://ctdsjulovk.g5.sqlite.cloud:8860/incidents.db?apikey=hwbtOOtrpqCjTa1MYk4Vk05V9nlwRjGpIwsWBh6gY0M"
+        self.connection_string = os.getenv("SQL_URL")
 
     def get_connection(self):
-        return sqlitecloud.connect(self.connection_string)             
+        if not self.connection_string:
+            raise ValueError("SQLITE_CLOUD_URL not found in .env")
+        return sqlitecloud.connect(self.connection_string)        
 
     def create_tables(self):
         conn = self.get_connection()

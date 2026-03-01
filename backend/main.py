@@ -1,12 +1,8 @@
 ﻿from database import database
 from RawData import RawData
 from dotenv import load_dotenv
-import os
 
-# load environment variables stored in the `backend/env` file.  Using
-# `dotenv` here means the rest of the code can simply rely on
-# `os.getenv` without worrying about how the variables arrived.
-load_dotenv(os.path.join(os.path.dirname(__file__), "env"))
+load_dotenv()
 
 
 def run_pipeline():

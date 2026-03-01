@@ -5,13 +5,8 @@ import os
 
 class database():
     def __init__(self):
-        # Attempt to load configuration from a dotenv file if present. The
-        # repository ships with a simple `env` file that contains the
-        # connection string, so we try to load it here. This keeps callers
-        # like `main.py` relatively clean, but the file can also be loaded
-        # from the entrypoint if preferred.
         from dotenv import load_dotenv
-        load_dotenv(os.path.join(os.path.dirname(__file__), "env"))
+        load_dotenv()
 
         # The code used to reference `SQLITE_CLOUD_URL` but the environment
         # we actually populate in `backend/env` uses `SQL_URL`.  Keep the

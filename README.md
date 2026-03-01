@@ -1,6 +1,11 @@
 # SafeBlue API
+<img width="1915" height="847" alt="image" src="https://github.com/user-attachments/assets/3ce2ca44-a95d-4187-b2ae-7bc5794df5d5" />
 
 A real-time Chicago Loop safety database with a dashboard for Chicago University Students. The app scrapes crime news from local RSS feeds, parses articles through Google Gemini to extract structured incident data (location, severity, type), stores everything in SQLite Cloud, and displays results on an interactive map.
+
+<img width="577" height="605" alt="image" src="https://github.com/user-attachments/assets/a85db2a9-55cb-465e-bd76-e80803e86539" />
+<img width="1906" height="846" alt="image" src="https://github.com/user-attachments/assets/07a03e4d-7dee-4073-baae-716e850bb3a7" />
+
 
 ## How It Works
 
@@ -110,7 +115,7 @@ cd backend
 pip install -r requirements.txt
 ```
 
-Create a file called `env` (or `.env`) in the `backend/` folder with:
+Create a `.env` file in the `backend/` folder with:
 ```
 SQL_URL=sqlitecloud://<user>:<pass>@<host>:<port>/<database>
 GEMINI_KEY=<your-google-gemini-api-key>

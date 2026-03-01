@@ -1,25 +1,28 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import OneSignal from 'react-onesignal';
 
 export default function Settings() {
   const navigate = useNavigate();
+  const [initialized, setInitialized] = useState(false);
   useEffect(() => {
-    async function initOneSignal() {
-      if (typeof window !== 'undefined') {
-        await OneSignal.init({
-          appId: 'dd6926db-9cdc-4782-9ebc-cd35321e13e4',
-          notifyButton: { enable: false },
-          allowLocalhostAsSecureOrigin: true,
-          serviceWorkerPath: "OneSignalSDKWorker.js",
-        });
-      }
+  async function initOneSignal() {
+    if (typeof window !== 'undefined') {
+      await OneSignal.init({
+        appId: 'dd6926db-9cdc-4782-9ebc-cd35321e13e4',
+        notifyButton: { enable: false },
+        autoRegister: true,
+        requiresUserPrivacyConsent: false,
+        allowLocalhostAsSecureOrigin: true,
+      });
     }
-    initOneSignal();
-  }, []);
+  }
+  initOneSignal();
+}, []);
 
   const handleSubscribeClick = () => {
-    if (typeof window !== 'undefined' && OneSignal.Slidedown) {
+    if (setInitialized === false && OneSignal.Slidedown) {
+      setInitialized(true);
       OneSignal.Slidedown.promptPush();
     }
   };

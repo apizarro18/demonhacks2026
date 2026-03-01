@@ -5,16 +5,11 @@ import os
 
 class database():
     def __init__(self):
-        # Attempt to load configuration from a dotenv file if present. The
-        # repository ships with a simple `env` file that contains the
-        # connection string, so we try to load it here. This keeps callers
-        # like `main.py` relatively clean, but the file can also be loaded
-        # from the entrypoint if preferred.
         from dotenv import load_dotenv
-        load_dotenv(os.path.join(os.path.dirname(__file__), "env"))
+        load_dotenv()
 
         # The code used to reference `SQLITE_CLOUD_URL` but the environment
-        # we actually populate in `backend/env` uses `SQL_URL`.  Keep the
+        # we actually populate in `backend/.env` uses `SQL_URL`.  Keep the
         # variable name consistent for clarity.
         self.connection_string = os.getenv("SQL_URL")
 
@@ -42,7 +37,7 @@ class database():
                 raw_news_id INTEGER,
                 latitude REAL,
                 longitude REAL,
-                hour INTEGER,
+                time TEXT,
                 incident_level TEXT,
                 incident_type TEXT,
                 description TEXT,
@@ -97,13 +92,13 @@ class database():
         conn.close()
         return news_id
 
-    def insert_parsed_incident(self, raw_news_id, latitude, longitude, hour, incident_level, incident_type, description, location_name):
+    def insert_parsed_incident(self, raw_news_id, latitude, longitude, time, incident_level, incident_type, description, location_name):
         conn = self.get_connection()
         cursor = conn.cursor()
         
-        params = (raw_news_id, latitude, longitude, hour, incident_level, incident_type, description, location_name)
+        params = (raw_news_id, latitude, longitude, time, incident_level, incident_type, description, location_name)
         cursor.execute("""
-            INSERT INTO parsed_incidents (raw_news_id, latitude, longitude, hour, incident_level, incident_type, description, location_name)
+            INSERT INTO parsed_incidents (raw_news_id, latitude, longitude, time, incident_level, incident_type, description, location_name)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """, params)
         

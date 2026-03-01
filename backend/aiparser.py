@@ -22,12 +22,12 @@ class AIProcessor:
 Extract crime incident details from this news article.
 
 Example output:
-{{"latitude": 40.7128, "longitude": -74.0060, "hour": 14, "incident_level": "High", "incident_type": "robbery", "description": "Armed robbery at corner store", "location_name": "5th Ave & 42nd St"}}
+{{"latitude": 40.7128, "longitude": -74.0060, "time": "10:30 PM", "incident_level": "High", "incident_type": "robbery", "description": "Armed robbery at corner store", "location_name": "5th Ave & 42nd St"}}
 
 Instructions:
 - if duplicate incidents are mentioned from different new sources, only create one entry for that incident, using the most specific location and time details available across all sources.
 - latitude & longitude: If exact coordinates aren't mentioned, infer from location_name
-- hour: Extract from timestamp if available, otherwise use 12 (noon) as default
+- time: Extract the US Central timestamp of the reported crime from the article. If not available, use the time of the article being published. If not, infer a time.
 - incident_level: Classify as "Low", "Med", or "High" based on severity
 - incident_type: e.g., "robbery", "assault", "theft", "burglary", "homicide", "DUI"
 - description: Concise summary of what happened (1 sentence)
@@ -113,7 +113,7 @@ def run():
                 raw_news_id=raw_news_id,
                 latitude=structured.get("latitude"),
                 longitude=structured.get("longitude"),
-                hour=structured.get("hour"),
+                time=structured.get("time"),
                 incident_level=structured.get("incident_level"),
                 incident_type=structured.get("incident_type"),
                 description=structured.get("description"),

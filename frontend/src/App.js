@@ -5,8 +5,8 @@ import Feed from "./pages/Feed";
 import SplashPage from "./pages/SplashPage"; // Adjust path as needed
 
 function App() {
-  const navigate = useNavigate();
-      const location = useLocation();
+    const navigate = useNavigate();
+    const location = useLocation();
   
     useEffect(() => {
       if (location.pathname !== '/') return; // only run when actually on the splash route

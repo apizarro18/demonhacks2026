@@ -21,13 +21,100 @@
   color: white; 
 }
 
+/* Base styles for all campus labels */
 .campus-label {
-  background: white;              /* solid white background */
-  color: #003366;                 /* dark blue text */
+  /* 1. Add your custom size here (change these numbers to whatever you want) */
+  width: 50px;
+  height: 45px;
+
+  /* 2. Add Flexbox to keep the text perfectly centered inside your new fixed size */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Your existing styles */
+  background-size: cover;          
+  background-position: center;     
+  background-repeat: no-repeat;
+  color: white;                    
   font-weight: 700;
-  padding: 8px 14px;
+  /* You can reduce or remove padding now that you have a fixed size */
+  padding: 5px; 
   border-radius: 10px;
   text-align: center;
-  border: 2px solid #003366;      /* clean blue border */
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);  /* subtle floating effect */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2); 
 }
+
+/* Adds a dark shadow to the text so it's readable over busy images */
+.label-text {
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.9);
+}
+
+/* =================================================
+  INDIVIDUAL UNIVERSITY BACKGROUNDS
+  Replace the url() with your actual image paths
+================================================= 
+*/
+
+.uchicago-bg {
+  background-color: #800000; /* Fallback color until image loads */
+  background-image: url('./Hackathon\ pictures/Uchicago.png');
+  border: 2px solid #800000;
+}
+
+.uic-bg {
+  background-color: #CC0000;
+  background-image: url('./Hackathon\ pictures/UIC.png');
+  border: 2px solid #CC0000;
+}
+
+.depaul-lp-bg {
+  background-color: #0033A0;
+  background-image: url('./Hackathon\ pictures/Depaul.png');
+  border: 2px solid #0033A0;
+}
+
+.iit-bg {
+  background-color: #C41E3A;
+  background-image: url('./Hackathon\ pictures/IIT.png');
+  border: 2px solid #C41E3A;
+}
+
+.loyola-bg {
+  background-color: #8B0000;
+  background-image: url('./Hackathon\ pictures/loyola.png');
+  border: 2px solid #8B0000;
+}
+
+.northwestern-bg {
+  background-color: #4E2A84;
+  background-image: url('./Hackathon\ pictures/northwestern.png');
+  border: 2px solid #4E2A84;
+}
+
+.columbia-bg {
+  background-color: #D4A017;
+  background-image: url('./Hackathon\ pictures/columbia.png');
+  border: 2px solid #D4A017;
+}
+
+.roosevelt-bg {
+  background-color: #006400;
+  background-image: url('./Hackathon\ pictures/roosevelt.jpg');
+  border: 2px solid #006400;
+}
+
+.csu-bg {
+  background-color: #2E8B57;
+  background-image: url('./Hackathon\ pictures/CSU.jpg');
+  border: 2px solid #2E8B57;
+}
+
+.depaul-loop-bg {
+  background-color: #0033A0;
+  background-image: url('./Hackathon\ pictures/Depaul.png');
+  border: 2px solid #0033A0;
+}
+
+
+

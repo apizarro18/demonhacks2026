@@ -93,6 +93,14 @@ function Map() {
     [41.7179, -87.6126], [41.7196, -87.6126],
   ];
 
+  // 10. DePaul University – Loop Campus — 15 points
+  const depaulLoopBoundary = [
+    [41.8781, -87.6278], [41.8781, -87.6261], [41.8764, -87.6261], [41.8764, -87.6278],
+    [41.8764, -87.6295], [41.8755, -87.6295], [41.8755, -87.6314], [41.8740, -87.6314],
+    [41.8740, -87.6308], [41.8716, -87.6308], [41.8716, -87.6278], [41.8740, -87.6278],
+    [41.8740, -87.6261], [41.8755, -87.6261], [41.8755, -87.6278],
+  ];
+
   // Campus polygon config: [boundary, color, label, labelPosition]
   const campuses = [
     { boundary: uchicagoBoundary, color: '#800000', label: 'University of Chicago', position: [41.7900, -87.5950] },
@@ -104,6 +112,7 @@ function Map() {
     { boundary: columbiaBoundary, color: '#D4A017', label: 'Columbia College Chicago', position: [41.8710, -87.6254] },
     { boundary: rooseveltBoundary, color: '#006400', label: 'Roosevelt University', position: [41.8774, -87.6254] },
     { boundary: csuBoundary, color: '#2E8B57', label: 'Chicago State University', position: [41.7182, -87.6096] },
+    { boundary: depaulLoopBoundary, color: '#0033A0', label: 'DePaul University - Loop', position: [41.8748, -87.6287] },
   ];
 
   const [alerts, setAlerts] = useState([]);

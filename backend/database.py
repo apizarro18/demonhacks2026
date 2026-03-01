@@ -37,7 +37,7 @@ class database():
                 raw_news_id INTEGER,
                 latitude REAL,
                 longitude REAL,
-                hour INTEGER,
+                time TEXT,
                 incident_level TEXT,
                 incident_type TEXT,
                 description TEXT,
@@ -92,13 +92,13 @@ class database():
         conn.close()
         return news_id
 
-    def insert_parsed_incident(self, raw_news_id, latitude, longitude, hour, incident_level, incident_type, description, location_name):
+    def insert_parsed_incident(self, raw_news_id, latitude, longitude, time, incident_level, incident_type, description, location_name):
         conn = self.get_connection()
         cursor = conn.cursor()
         
-        params = (raw_news_id, latitude, longitude, hour, incident_level, incident_type, description, location_name)
+        params = (raw_news_id, latitude, longitude, time, incident_level, incident_type, description, location_name)
         cursor.execute("""
-            INSERT INTO parsed_incidents (raw_news_id, latitude, longitude, hour, incident_level, incident_type, description, location_name)
+            INSERT INTO parsed_incidents (raw_news_id, latitude, longitude, time, incident_level, incident_type, description, location_name)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """, params)
         

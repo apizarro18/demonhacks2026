@@ -91,6 +91,29 @@ class database():
         conn.commit()
         conn.close()
         return news_id
+    
+    def clear_all_data(self):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        try:
+            # Disable foreign keys temporarily if you want to force it (careful!)
+            # cursor.execute("PRAGMA foreign_keys = OFF;") 
+            
+            # Standard safe way: Delete child then parent
+            cursor.execute("DELETE FROM parsed_incidents")
+            cursor.execute("DELETE FROM raw_news")
+            
+            # Reset those AUTOINCREMENT counters
+            cursor.execute("DELETE FROM sqlite_sequence WHERE name = 'parsed_incidents'")
+            cursor.execute("DELETE FROM sqlite_sequence WHERE name = 'raw_news'")
+            
+            conn.commit()
+            print("Database cleared and ready for new demo data!")
+        except Exception as e:
+            print(f"Error clearing data: {e}")
+        finally:
+            conn.close()
+
 
     def insert_parsed_incident(self, raw_news_id, latitude, longitude, time, incident_level, incident_type, description, location_name):
         conn = self.get_connection()

@@ -1,50 +1,54 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { messaging } from '../firebase';
+import { messaging, vapidKey} from '../firebase';
 import { getToken } from 'firebase/messaging';
 
 export default function Settings({ heatmapVisible, setHeatmapVisible }) {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();                       // ← define navigate
   const [enabled, setEnabled] = useState(false);
-
+  const [loading, setLoading] = useState(false);        // ← define loading
   useEffect(() => {
     if (Notification.permission === "granted") {
       setEnabled(true);
     }
   }, []);
-    const enableNotifications = async () => {
-      try {
-        setLoading(true);
 
-        // Check if browser supports notifications
-        if (!('Notification' in window)) {
-          alert('Your browser does not support notifications.');
-          setLoading(false);
-          return;
-        }
-
-
-      const token = await getToken(messaging, {
-        vapidKey: "BGAaRzieRN5W29lRcJnGubCa08BmVmmApmXOaoZosQIzQEzIzbk0nUny0_NJ2QLG8ay7AukF-y8fd2achosxq9I"
-      });
-
-      await fetch("http://localhost:5000/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token })
-      });
-      
-      console.log("FCM Token:", token);
-
-      setEnabled(true);
-    } catch (err) {
-      console.error("Notification error:", err);
-      alert("Something went wrong enabling notifications.");
-    } finally {
-      setLoading(false);
+  const enableNotifications = async () => {
+    if (!("Notification" in window)) {
+      alert("Notifications not supported");
+      return;
     }
+    if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+      alert("Push API not available");
+      return;
+    }
+
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") return;
+
+    // make sure the worker is registered and keep the registration object
+    let registration = await navigator.serviceWorker.getRegistration();
+    if (!registration) {
+      registration = await navigator.serviceWorker.register(
+        "/firebase-messaging-sw.js"
+      );
+    }
+
+    try {
+      const token = await getToken(messaging, {
+        vapidKey,
+        serviceWorkerRegistration: registration,   // ← important!
+      });
+      console.log("FCM Token:", token);
+      // send token to your Flask backend…
+    } catch (err) {
+      console.warn("could not get FCM token", err);
+      // token retrieval failed, but permission was granted
+    }
+    setEnabled(true);
   };
+
+  // …rest of component…
 
   return (
     <div style={styles.container}>

@@ -3,6 +3,11 @@
 
 A real-time Chicago Loop safety database with a dashboard for Chicago University Students. The app scrapes crime news from local RSS feeds, parses articles through Google Gemini to extract structured incident data (location, severity, type), stores everything in SQLite Cloud, and displays results on an interactive map.
 
+##Map with realtime crime incidents and heat map
+<img width="1916" height="875" alt="image" src="https://github.com/user-attachments/assets/62580029-f74f-4821-971e-240122d59eaf" />
+##Campus Designation
+<img width="1372" height="872" alt="image" src="https://github.com/user-attachments/assets/31636a21-afcd-4409-b53c-85928874f4a9" />
+##Settings
 <img width="1907" height="875" alt="image" src="https://github.com/user-attachments/assets/98d6334f-2f47-4182-89aa-ba3ce5d55acf" />
 
 

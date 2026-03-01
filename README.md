@@ -35,7 +35,6 @@ News Websites ──> Scrape/Fetch raw articles ──> Store in raw_news table
 | Backend  | Flask                |
 | Database | SQLite (`incidents.db`)          |
 | Data     | news scraping          |
-| AI       | [SQLite-AI](https://github.com/sqliteai/sqlite-ai) — on-device LLM inference via SQL queries |
 
 ## Database Schema
 

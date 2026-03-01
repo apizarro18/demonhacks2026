@@ -2,7 +2,6 @@ flask
 flask-cors
 newsapi-python
 sqlitecloud
-sqliteai
 feedparser
 python-dateutil
 google-generativeai

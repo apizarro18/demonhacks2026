@@ -1,6 +1,8 @@
-from flask import Flask, jsonify
-from flask_cors import CORS
 from database import database
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import firebase_admin
+from firebase_admin import credentials, messaging
 
 app = Flask(__name__)
 CORS(app)  # allows React (localhost:3000) to access backend
@@ -96,6 +98,17 @@ def _transform_incident(row):
         "timestamp": timestamp,
     }
 
+
+cred = credentials.Certificate("serviceAccountKey.json")
+firebase_admin.initialize_app(cred)
+
+@app.route("/subscribe", methods=["POST"])
+def subscribe():
+    token = request.json.get("token")
+
+    messaging.subscribe_to_topic(token, "allUsers")
+
+    return jsonify({"success": True})
 
 @app.route("/alerts", methods=["GET"])
 def get_alerts():

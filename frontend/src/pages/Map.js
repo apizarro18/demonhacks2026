@@ -61,6 +61,8 @@ function Map() {
       <MapContainer
         center={[41.92458, -87.650722]}
         zoom={15}
+        minZoom={13} /* PREVENTS zooming out too far (stops the shrinking) */
+        maxZoom={18} /* PREVENTS zooming in too close */
         style={{ height: "100%", width: "100%", zIndex: 1 }}
       >
         <TileLayer
@@ -92,13 +94,13 @@ function Map() {
         ></Polygon>
         <Marker
           position={[41.9239, -87.6539]} 
-          icon={labelIcon("DePaul University - Lincoln Park Campus")}
+          icon={labelIcon("DePaul University - Lincoln Park Campus 🏛️")}
         />
         <Marker
           position={[41.8778, -87.6264]} 
-          icon={labelIcon("DePaul - Loop Campus")}
+          icon={labelIcon("DePaul - Loop Campus 🏙️")}
         />
-      </MapContainer>
+      </MapContainer> 
 
       {/* 2. The Live Feed */}
       <Feed />
@@ -111,6 +113,27 @@ function Map() {
           bottom: "30px",
           right: "20px",
           zIndex: 99999, /* Maximum z-index to guarantee visibility */
+          backgroundColor: "#001a4d",
+          color: "white",
+          padding: "12px 18px",
+          borderRadius: "8px",
+          textDecoration: "none",
+          fontWeight: "bold",
+          fontSize: "16px",
+          boxShadow: "0 4px 6px rgba(0,0,0,0.3)",
+          display: "block",
+          fontFamily: "Arial, sans-serif"
+        }}
+      >
+        🚓 Call Public Safety: (773) 325-7777
+      </a>
+<a 
+        href="tel:911"  /* Removed the space here */
+        style={{
+          position: "fixed",
+          bottom: "100px", /* Sits right at the bottom */
+          right: "20px",
+          zIndex: 99999, 
           backgroundColor: "#c8102e",
           color: "white",
           padding: "12px 18px",
@@ -123,7 +146,7 @@ function Map() {
           fontFamily: "Arial, sans-serif"
         }}
       >
-        🚨 Call Public Safety: (773) 325-7777
+        🚨 Emergency Number: 911
       </a>
 
     </div>

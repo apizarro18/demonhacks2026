@@ -113,7 +113,7 @@ def run():
                 raw_news_id=raw_news_id,
                 latitude=structured.get("latitude"),
                 longitude=structured.get("longitude"),
-                hour=structured.get("hour"),
+                time=structured.get("time"),
                 incident_level=structured.get("incident_level"),
                 incident_type=structured.get("incident_type"),
                 description=structured.get("description"),

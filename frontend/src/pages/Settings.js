@@ -13,17 +13,17 @@ export default function Settings({ heatmapVisible, setHeatmapVisible }) {
       setEnabled(true);
     }
   }, []);
-  const enableNotifications = async () => {
-    try {
-      setLoading(true);
+    const enableNotifications = async () => {
+      try {
+        setLoading(true);
 
-      const permission = await Notification.requestPermission();
+        // Check if browser supports notifications
+        if (!('Notification' in window)) {
+          alert('Your browser does not support notifications.');
+          setLoading(false);
+          return;
+        }
 
-      if (permission !== 'granted') {
-        alert('Notification permission denied.');
-        setLoading(false);
-        return;
-      }
 
       const token = await getToken(messaging, {
         vapidKey: "BGAaRzieRN5W29lRcJnGubCa08BmVmmApmXOaoZosQIzQEzIzbk0nUny0_NJ2QLG8ay7AukF-y8fd2achosxq9I"

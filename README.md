@@ -1,6 +1,6 @@
 # SafeBlue API
 
-A real-time neighborhood databse with a safety dashboard for Chicago University Students. The app scrapes crime news from local RSS feeds, parses articles through Google Gemini to extract structured incident data (location, severity, type), stores everything in SQLite Cloud, and displays results on an interactive map.
+A real-time Chicago Loop safety database with a dashboard for Chicago University Students. The app scrapes crime news from local RSS feeds, parses articles through Google Gemini to extract structured incident data (location, severity, type), stores everything in SQLite Cloud, and displays results on an interactive map.
 
 ## How It Works
 

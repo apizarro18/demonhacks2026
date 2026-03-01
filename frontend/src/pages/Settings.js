@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { messaging } from '../firebase';
 import { getToken } from 'firebase/messaging';
 
-export default function Settings() {
+export default function Settings({ heatmapVisible, setHeatmapVisible }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [enabled, setEnabled] = useState(false);
@@ -54,6 +54,27 @@ export default function Settings() {
         <div style={{ width: 24 }} />
       </div>
 
+      {/* Content Card */}
+      <div style={styles.card}>
+        <div style={styles.icon}>🛡️</div>
+
+        <h1 style={styles.title}>Map Settings</h1>
+
+        <p style={styles.description}>
+          Customize how the map displays crime and safety data. 
+        </p>
+
+        {/* Heatmap Toggle Button */}
+        <button
+          style={{
+            ...styles.button,
+            backgroundColor: heatmapVisible ? "#0056B3" : "#888",
+          }}
+          onClick={() => setHeatmapVisible(!heatmapVisible)}
+        >
+          {heatmapVisible ? "Hide Heatmap" : "Show Heatmap"}
+        </button>
+      </div>
       {/* Content Card */}
       <div style={styles.card}>
         <div style={styles.icon}>🛡️</div>

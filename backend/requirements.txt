@@ -1,6 +1,9 @@
 flask
 flask-cors
 newsapi-python
+react-leaflet
+react-router-dom
+react-onesignal
 sqlitecloud
 feedparser
 python-dateutil

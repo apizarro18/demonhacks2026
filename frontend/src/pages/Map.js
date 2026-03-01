@@ -1,11 +1,27 @@
 import 'leaflet/dist/leaflet.css';
-import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
-import { useEffect, useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, Polygon, useMap } from 'react-leaflet';
+import { useEffect, useRef, useState } from 'react';
 import '../css/Map.css';
 import Feed from './Feed';
 import L from 'leaflet';
 import customMapIcon from '../components/mapIcon.png';
 import customShadowIcon from '../components/shadowIcon.png';
+
+function FlyToHandler({ target, markerRefs }) {
+  const map = useMap();
+  useEffect(() => {
+    if (target) {
+      map.flyTo([target.lat, target.lng], 16);
+      const key = `${target.lat},${target.lng}`;
+      const marker = markerRefs.current[key];
+      if (marker) {
+        // Open popup after fly animation finishes
+        setTimeout(() => marker.openPopup(), 1500);
+      }
+    }
+  }, [target, map, markerRefs]);
+  return null;
+}
 
 function Map() {
   const mapIcon = L.icon({
@@ -115,6 +131,8 @@ function Map() {
   ];
 
   const [alerts, setAlerts] = useState([]);
+  const [flyTarget, setFlyTarget] = useState(null);
+  const markerRefs = useRef({});
 
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
@@ -145,6 +163,7 @@ function Map() {
           attribution='&copy; <a href="https://www.openstreetmap.org">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <FlyToHandler target={flyTarget} markerRefs={markerRefs} />
         {alerts
           .filter(alert => alert.lat && alert.lng)
           .map((alert, index) => (
@@ -152,6 +171,9 @@ function Map() {
               icon={mapIcon}
               key={alert.id || index}
               position={[alert.lat, alert.lng]}
+              ref={(ref) => {
+                if (ref) markerRefs.current[`${alert.lat},${alert.lng}`] = ref;
+              }}
             >
               <Popup>
                 <strong>{alert.type}</strong><br/>
@@ -181,7 +203,7 @@ function Map() {
       </MapContainer> 
 
       {/* 2. The Live Feed */}
-      <Feed alerts={alerts} />
+      <Feed alerts={alerts} onAlertClick={setFlyTarget} />
       
       {/* 3. The Public Safety Button (Fixed to screen) */}
       <a 

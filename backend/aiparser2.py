@@ -3,7 +3,7 @@ import json
 from database import database # Your class
 
 class SafetyAgent:
-    def __init__(self, api_key=AIzaSyBO9nJvsdOwaQSYDZGDKa5sKptVYzq0S14):
+    def __init__(self, api_key="AIzaSyBO9nJvsdOwaQSYDZGDKa5sKptVYzq0S14"):
         genai.configure(api_key="AIzaSyBO9nJvsdOwaQSYDZGDKa5sKptVYzq0S14")
         self.model = genai.GenerativeModel('gemini-1.5-flash')
         self.db = database()

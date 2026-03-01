@@ -1,10 +1,17 @@
 import google.generativeai as genai
 import json
 from database import database # Your class
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class SafetyAgent:
-    def __init__(self, api_key="AIzaSyBO9nJvsdOwaQSYDZGDKa5sKptVYzq0S14"):
-        genai.configure(api_key="AIzaSyBO9nJvsdOwaQSYDZGDKa5sKptVYzq0S14")
+    def __init__(self):
+        api_key = os.getenv("GEMINI_KEY")
+        if not api_key:
+            raise ValueError("GEMINI KEY not found in .env file")
+        genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel('gemini-1.5-flash')
         self.db = database()
 

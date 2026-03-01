@@ -1,0 +1,10 @@
+.campus-label {
+  background: white;              /* solid white background */
+  color: #003366;                 /* dark blue text */
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 10px;
+  text-align: center;
+  border: 2px solid #003366;      /* clean blue border */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);  /* subtle floating effect */
+}

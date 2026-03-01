@@ -3,8 +3,10 @@ from database import database
 from google import genai
 from dotenv import load_dotenv
 import os
+import time
 
 load_dotenv()
+
 # -----------------------------
 # AI Processor
 # -----------------------------
@@ -13,8 +15,7 @@ class AIProcessor:
         self.api_key = os.getenv("GEMINI_KEY")
         if not self.api_key:
             raise ValueError("GEMINI_KEY not found in .env file")
-
-        self.client = genai.Client(api_key=api_key)
+        self.client = genai.Client(api_key=self.api_key)
 
     def parse_article(self, article_dict):
         prompt = f"""
@@ -46,7 +47,6 @@ Return ONLY valid JSON with the structure shown in the example above.
             )
 
             text = response.text.strip()
-
             if text.startswith("```"):
                 text = text.replace("```json", "").replace("```", "").strip()
 
@@ -62,12 +62,11 @@ Return ONLY valid JSON with the structure shown in the example above.
 # -----------------------------
 def run():
     db = database()
-    processor = AIProcessor(self.api_key)
+    processor = AIProcessor()
 
     conn = db.get_connection()
     cursor = conn.cursor()
 
-    # Only fetch raw_news that have NOT been parsed yet
     cursor.execute("""
         SELECT r.id, r.raw_json
         FROM raw_news r
@@ -81,30 +80,53 @@ def run():
 
     print(f"Found {len(rows)} unparsed articles.\n")
 
-    for raw_news_id, raw_json in rows:
-        try:
-            article = json.loads(raw_json)
-        except:
-            continue
+    batch_size = 5
+    total = len(rows)
 
-        print("Processing:", article.get("title"))
+    for i in range(0, total, batch_size):
+        batch = rows[i:i+batch_size]
+        batch_start_time = time.time()
+        print(f"Processing batch {i//batch_size + 1}\n")
 
-        structured = processor.parse_article(article)
-        if not structured:
-            continue
+        for raw_news_id, raw_json in batch:
+            try:
+                article = json.loads(raw_json)
+            except:
+                continue
 
-        db.insert_parsed_incident(
-            raw_news_id=raw_news_id,
-            latitude=structured.get("latitude"),
-            longitude=structured.get("longitude"),
-            hour=structured.get("hour"),
-            incident_level=structured.get("incident_level"),
-            incident_type=structured.get("incident_type"),
-            description=structured.get("description"),
-            location_name=structured.get("location_name"),
-        )
+            print("Processing:", article.get("title"))
+            structured = processor.parse_article(article)
+            if not structured:
+                continue
 
-        print("Inserted.\n")
+            db.insert_parsed_incident(
+                raw_news_id=raw_news_id,
+                latitude=structured.get("latitude"),
+                longitude=structured.get("longitude"),
+                hour=structured.get("hour"),
+                incident_level=structured.get("incident_level"),
+                incident_type=structured.get("incident_type"),
+                description=structured.get("description"),
+                location_name=structured.get("location_name"),
+            )
+            print("Inserted.\n")
+
+        # Prompt user for next batch if there are more
+        if i + batch_size < total:
+            while True:
+                user_input = input("Processed 5 articles. Continue next 5? (yes/quit): ").strip().lower()
+                if user_input == "yes":
+                    elapsed = time.time() - batch_start_time
+                    if elapsed < 60:
+                        wait_time = 60 - elapsed
+                        print(f"Waiting {int(wait_time)} seconds to respect rate limit...")
+                        time.sleep(wait_time)
+                    break
+                elif user_input == "quit":
+                    print("Exiting parser safely.")
+                    return
+                else:
+                    print("Please type 'yes' to continue or 'quit' to exit.")
 
     print("Done.")
 

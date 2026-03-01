@@ -12,7 +12,7 @@ function Feed() {
 
   return (
     <div style={styles.container}>
-      <h3 style={styles.header}>Live Alerts</h3>
+      <h3 style={styles.header}> 🛡️ Blue Safety Live Alerts </h3>
 
       {alerts.length === 0 ? (
         <p style={styles.empty}>No active alerts</p>

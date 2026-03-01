@@ -83,18 +83,22 @@ demonhacks2026/
 │   ├── RawData.py         # RSS feed scraper/aggregator (7 Chicago sources)
 │   ├── aiparser.py        # Google Gemini parser — extracts structured incident data
 │   ├── database.py        # SQLite Cloud connection & table management
-│   ├── app.py             # Flask API server
+│   ├── app.py             # Flask API server (GET /alerts)
 │   ├── requirements.txt   # Python dependencies
 │   └── .env.example       # Environment variable template
 ├── frontend/
 │   ├── public/
-│   │   └── index.html
+│   │   ├── index.html
+│   │   └── OneSignalSDKWorker.js  # Push notification service worker
 │   └── src/
-│       ├── App.js
-│       └── components/
-│           ├── Map.js           # Leaflet map with incident markers
-│           ├── NewsFeed.js      # List of recent incidents
-│           └── IncidentForm.js  # User-submitted reports
+│       ├── App.js              # Router — splash, map, feed, settings
+│       ├── pages/
+│       │   ├── Map.js          # Leaflet map with campus polygons & incident markers
+│       │   ├── Feed.js         # Live alert feed sidebar
+│       │   ├── Settings.js     # Push notification subscription (OneSignal)
+│       │   └── SplashPage.js   # Animated loading screen
+│       └── css/
+│           └── Map.css         # Map and campus label styles
 └── README.md
 ```
 
@@ -133,6 +137,133 @@ cd frontend
 npm install
 npm start             # React on http://localhost:3000
 ```
+
+## API Documentation
+
+### `GET /alerts`
+
+Returns all parsed safety incidents as a JSON array. Falls back to sample data if the database is unreachable or empty.
+
+**URL:** `http://localhost:5000/alerts`
+
+**Response:** `200 OK` — `application/json`
+
+```json
+[
+  {
+    "id": 1,
+    "lat": 41.8781,
+    "lng": -87.6298,
+    "type": "Robbery",
+    "severity": 3,
+    "message": "Armed robbery reported near State St and Jackson Blvd.",
+    "timestamp": "2026-02-28T14:30:00Z"
+  }
+]
+```
+
+**Response fields:**
+
+| Field       | Type    | Description                                          |
+|-------------|---------|------------------------------------------------------|
+| `id`        | integer | Unique incident ID                                   |
+| `lat`       | float   | Latitude                                             |
+| `lng`       | float   | Longitude                                            |
+| `type`      | string  | Incident category in title case (e.g. "Robbery", "Assault") |
+| `severity`  | integer | 1 (Low), 3 (Medium), 5 (High)                       |
+| `message`   | string  | AI-generated incident summary                        |
+| `timestamp` | string  | ISO 8601 datetime (UTC)                              |
+
+**Behavior:**
+- Queries `parsed_incidents` from SQLite Cloud and transforms DB fields to the frontend schema
+- If the database returns no rows or the connection fails, the endpoint returns hardcoded fallback alerts so the frontend always has data to render
+
+---
+
+## Deployment
+
+### Prerequisites
+
+- Python 3.10+
+- Node.js 18+
+- A [SQLite Cloud](https://sqlitecloud.io) database
+- A [Google Gemini API key](https://aistudio.google.com/apikey)
+
+### Environment Variables
+
+**Backend** — create `backend/.env`:
+```
+SQL_URL=sqlitecloud://<user>:<pass>@<host>:<port>/<database>
+GEMINI_KEY=<your-google-gemini-api-key>
+```
+
+**Frontend** — create `frontend/.env`:
+```
+REACT_APP_SQL_URL=sqlitecloud://<user>:<pass>@<host>:<port>/<database>
+```
+
+### Deploy the Backend (Render / Railway / any VPS)
+
+1. Install dependencies:
+   ```bash
+   cd backend
+   pip install -r requirements.txt
+   ```
+
+2. Initialize the database tables:
+   ```bash
+   python database.py
+   ```
+
+3. Run the data pipeline (fetch + parse):
+   ```bash
+   python main.py        # Scrape RSS feeds → raw_news table
+   python aiparser.py    # Parse with Gemini → parsed_incidents table
+   ```
+
+4. Start the API server:
+   ```bash
+   # Development
+   python app.py
+
+   # Production (with gunicorn)
+   pip install gunicorn
+   gunicorn app:app --bind 0.0.0.0:5000
+   ```
+
+### Deploy the Frontend (Vercel / Netlify)
+
+1. Build the production bundle:
+   ```bash
+   cd frontend
+   npm install
+   npm run build
+   ```
+
+2. The `build/` folder contains static files ready to deploy. Point your hosting provider at this directory.
+
+3. Set the environment variable `REACT_APP_SQL_URL` in your hosting provider's dashboard.
+
+4. If deploying to a different domain than the backend, update the fetch URL in `Feed.js` to point to your deployed backend (e.g. `https://your-api.onrender.com/alerts`).
+
+### Example: Render (Backend)
+
+| Setting       | Value                          |
+|---------------|--------------------------------|
+| Build command | `pip install -r requirements.txt` |
+| Start command | `gunicorn app:app --bind 0.0.0.0:$PORT` |
+| Environment   | Set `SQL_URL` and `GEMINI_KEY` |
+
+### Example: Vercel (Frontend)
+
+| Setting         | Value                            |
+|-----------------|----------------------------------|
+| Framework       | Create React App                 |
+| Build command   | `npm run build`                  |
+| Output directory| `build`                          |
+| Environment     | Set `REACT_APP_SQL_URL`          |
+
+---
 
 ## Resetting ID Counters
 

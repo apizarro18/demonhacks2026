@@ -17,7 +17,7 @@ yarn-error.log*
 frontend/build/
 
 # Database
-crimes.db
+incidents.db
 
 # OS
 .DS_Store

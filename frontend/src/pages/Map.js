@@ -117,18 +117,20 @@ function Map() {
   ];
 
   // Campus polygon config: [boundary, color, label, labelPosition]
+  // Campus polygon config: [boundary, color, label, labelPosition, cssClass]
   const campuses = [
-    { boundary: uchicagoBoundary, color: '#800000', label: 'University of Chicago', position: [41.7900, -87.5950] },
-    { boundary: uicBoundary, color: '#CC0000', label: 'UIC', position: [41.8682, -87.6527] },
-    { boundary: depaulLPBoundary, color: '#0033A0', label: 'DePaul University - Lincoln Park', position: [41.9239, -87.6539] },
-    { boundary: iitBoundary, color: '#C41E3A', label: 'Illinois Institute of Technology', position: [41.8345, -87.6277] },
-    { boundary: loyolaBoundary, color: '#8B0000', label: 'Loyola University', position: [41.9968, -87.6575] },
-    { boundary: northwesternBoundary, color: '#4E2A84', label: 'Northwestern - Chicago', position: [41.8945, -87.6225] },
-    { boundary: columbiaBoundary, color: '#D4A017', label: 'Columbia College Chicago', position: [41.8710, -87.6254] },
-    { boundary: rooseveltBoundary, color: '#006400', label: 'Roosevelt University', position: [41.8774, -87.6254] },
-    { boundary: csuBoundary, color: '#2E8B57', label: 'Chicago State University', position: [41.7182, -87.6096] },
-    { boundary: depaulLoopBoundary, color: '#0033A0', label: 'DePaul University - Loop', position: [41.8748, -87.6287] },
+    { boundary: uchicagoBoundary, color: '#800000', label: ' ', position: [41.7900, -87.5950], cssClass: 'uchicago-bg' },
+    { boundary: uicBoundary, color: '#CC0000', label: ' ', position: [41.8682, -87.6527], cssClass: 'uic-bg' },
+    { boundary: depaulLPBoundary, color: '#0033A0', label: ' ', position: [41.9239, -87.6539], cssClass: 'depaul-lp-bg' },
+    { boundary: iitBoundary, color: '#C41E3A', label: ' ', position: [41.8345, -87.6277], cssClass: 'iit-bg' },
+    { boundary: loyolaBoundary, color: '#8B0000', label: ' ', position: [41.9968, -87.6575], cssClass: 'loyola-bg' },
+    { boundary: northwesternBoundary, color: '#4E2A84', label: ' ', position: [41.8945, -87.6225], cssClass: 'northwestern-bg' },
+    { boundary: columbiaBoundary, color: '#D4A017', label: ' ', position: [41.8710, -87.6254], cssClass: 'columbia-bg' },
+    { boundary: rooseveltBoundary, color: '#006400', label: ' ', position: [41.8774, -87.6254], cssClass: 'roosevelt-bg' },
+    { boundary: csuBoundary, color: '#2E8B57', label: ' ', position: [41.7182, -87.6096], cssClass: 'csu-bg' },
+    { boundary: depaulLoopBoundary, color: '#0033A0', label: ' ', position: [41.8748, -87.6287], cssClass: 'depaul-loop-bg' },
   ];
+  // ... your campuses array ends here
 
   const [alerts, setAlerts] = useState([]);
   const [flyTarget, setFlyTarget] = useState(null);
@@ -142,9 +144,11 @@ function Map() {
       .catch(err => console.error("Failed to fetch alerts:", err));
   }, []);
 
-  const labelIcon = (text) =>
+  // ... the rest of your code
+
+ const labelIcon = (text, cssClass) =>
     L.divIcon({
-      className: "campus-label",
+      className: `campus-label ${cssClass}`, // <--- Notice the change here!
       html: `<div class="label-text">${text}</div>`,
       iconSize: [220, null],   
       iconAnchor: [110, 0],    
@@ -197,7 +201,8 @@ function Map() {
           <Marker
             key={`label-${idx}`}
             position={campus.position}
-            icon={labelIcon(campus.label)}
+            // Pass the cssClass into the function here:
+            icon={labelIcon(campus.label, campus.cssClass)} 
           />
         ))}
       </MapContainer> 

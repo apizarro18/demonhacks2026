@@ -91,7 +91,7 @@ function Map() {
         />
         <Marker
           position={[41.8778, -87.6264]} // center of Loop boundary
-          icon={labelIcon("DePaul - Loop Campus")}
+          icon={labelIcon("DePaul University - Loop Campus")}
         />
       </MapContainer>
       <Feed />

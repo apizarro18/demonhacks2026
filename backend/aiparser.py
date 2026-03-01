@@ -7,16 +7,27 @@ import google.generativeai as genai
 class AIProcessor:
     def __init__(self, api_key):
         genai.configure(api_key="AIzaSyBO9nJvsdOwaQSYDZGDKa5sKptVYzq0S14")
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
+        self.model = genai.GenerativeModel('gemini-2.5-flash')
 
     def parse_article(self, raw_text):
         prompt = f"""
-        Extract the following crime incident details from this text:
-        {raw_text}
-        
-        Return ONLY a JSON object with these keys: 
-        latitude, longitude, hour (0-23), incident_level (Low/Med/High), 
-        incident_type, description, location_name.
+Extract crime incident details from this news article.
+
+Example output:
+{{"latitude": 40.7128, "longitude": -74.0060, "hour": 14, "incident_level": "High", "incident_type": "robbery", "description": "Armed robbery at corner store", "location_name": "5th Ave & 42nd St"}}
+
+Instructions:
+- latitude & longitude: If exact coordinates aren't mentioned, infer from location_name or use null
+- hour: Extract from timestamp if available, otherwise use 12 (noon) as default
+- incident_level: Classify as "Low", "Med", or "High" based on severity
+- incident_type: e.g., "robbery", "assault", "theft", "burglary"
+- description: Concise summary of what happened
+- location_name: Specific street, building, or area name
+
+Article:
+{raw_text}
+
+Return ONLY valid JSON with the structure shown in the example above.
         """
         response = self.model.generate_content(prompt)
         # Convert AI string response back to a Python Dictionary

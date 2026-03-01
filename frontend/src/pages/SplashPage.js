@@ -1,7 +1,12 @@
 import React from 'react';
+import { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+  
 
 const SplashPage = () => {
+    
   return (
+    
     <div style={styles.splashContainer}>
       {/* Animated Shield Icon */}
       <div className="pulse-container" style={styles.logoCircle}>

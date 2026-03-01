@@ -1,29 +1,42 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import OneSignal from 'react-onesignal';
+import { messaging } from '../firebase';
+import { getToken } from 'firebase/messaging';
 
 export default function Settings() {
   const navigate = useNavigate();
-  const [initialized, setInitialized] = useState(false);
-  useEffect(() => {
-  async function initOneSignal() {
-    if (typeof window !== 'undefined') {
-      await OneSignal.init({
-        appId: 'dd6926db-9cdc-4782-9ebc-cd35321e13e4',
-        notifyButton: { enable: false },
-        autoRegister: true,
-        requiresUserPrivacyConsent: false,
-        allowLocalhostAsSecureOrigin: true,
-      });
-    }
-  }
-  initOneSignal();
-}, []);
+  const [loading, setLoading] = useState(false);
+  const [enabled, setEnabled] = useState(false);
 
-  const handleSubscribeClick = () => {
-    if (setInitialized === false && OneSignal.Slidedown) {
-      setInitialized(true);
-      OneSignal.Slidedown.promptPush();
+  useEffect(() => {
+    if (Notification.permission === "granted") {
+      setEnabled(true);
+    }
+  }, []);
+  const enableNotifications = async () => {
+    try {
+      setLoading(true);
+
+      const permission = await Notification.requestPermission();
+
+      if (permission !== 'granted') {
+        alert('Notification permission denied.');
+        setLoading(false);
+        return;
+      }
+
+      const token = await getToken(messaging, {
+        vapidKey: "BGAaRzieRN5W29lRcJnGubCa08BmVmmApmXOaoZosQIzQEzIzbk0nUny0_NJ2QLG8ay7AukF-y8fd2achosxq9I"
+      });
+
+      console.log("FCM Token:", token);
+
+      setEnabled(true);
+    } catch (err) {
+      console.error("Notification error:", err);
+      alert("Something went wrong enabling notifications.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -38,7 +51,7 @@ export default function Settings() {
           ←
         </button>
         <span style={styles.navTitle}>Settings</span>
-        <div style={{ width: 24 }} /> {/* Spacer for symmetry */}
+        <div style={{ width: 24 }} />
       </div>
 
       {/* Content Card */}
@@ -52,14 +65,21 @@ export default function Settings() {
           incidents, weather warnings, and emergency notifications around DePaul.
         </p>
 
-        <button style={styles.button} onClick={handleSubscribeClick}>
-          Enable Safety Alerts
+        <button
+          style={styles.button}
+          onClick={enableNotifications}
+          disabled={loading || enabled}
+        >
+          {loading
+            ? "Enabling..."
+            : enabled
+            ? "Alerts Enabled ✓"
+            : "Enable Safety Alerts"}
         </button>
       </div>
     </div>
   );
 }
-
 const styles = {
   container: {
     minHeight: '100vh',

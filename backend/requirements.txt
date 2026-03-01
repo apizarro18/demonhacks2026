@@ -5,3 +5,5 @@ sqlitecloud
 sqliteai
 feedparser
 python-dateutil
+google-generativeai
+python-dotenv

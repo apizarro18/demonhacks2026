@@ -66,7 +66,7 @@ const styles = {
   alert: {
     marginBottom: "8px",
     padding: "8px",
-    backgroundColor: "#f8f8f8",
+    backgroundColor: "#cadaf2",
     borderRadius: "6px",
     fontSize: "14px",
     transition: "background-color 0.15s ease"

@@ -21,7 +21,7 @@ export default function Heatmap({ points, flyAnimationActive }) {
         0.4: "rgba(255, 90, 0, 0.4)",    // Red-Orange
         0.6: "rgba(255, 150, 0, 0.5)",   // Orange
         0.8: "rgba(255, 220, 0, 0.6)",   // Yellow
-        1.0: "rgba(255, 255, 255, 0.8)"  // White hot
+        1.0: "rgba(244, 7, 7, 0.8)"  // Bright Red
       }, // <-- This comma or bracket right here is usually what goes missing!
       updateWhenIdle: false, 
       updateInterval: 0

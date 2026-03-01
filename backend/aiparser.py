@@ -6,7 +6,7 @@ import google.generativeai as genai
 
 class AIProcessor:
     def __init__(self, api_key):
-        genai.configure(api_key=AIzaSyBO9nJvsdOwaQSYDZGDKa5sKptVYzq0S14)
+        genai.configure(api_key="AIzaSyBO9nJvsdOwaQSYDZGDKa5sKptVYzq0S14")
         self.model = genai.GenerativeModel('gemini-1.5-flash')
 
     def parse_article(self, raw_text):

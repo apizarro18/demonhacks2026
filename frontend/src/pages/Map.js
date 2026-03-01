@@ -6,6 +6,7 @@ import Feed from './Feed';
 import L from 'leaflet';
 import customMapIcon from '../components/mapIcon.png';
 import customShadowIcon from '../components/shadowIcon.png';
+import Heatmap from "./Heatmap";
 
 function FlyToHandler({ target, markerRefs }) {
   const map = useMap();
@@ -24,6 +25,19 @@ function FlyToHandler({ target, markerRefs }) {
 }
 
 function Map() {
+  const [crimePoints, setCrimePoints] = useState([]);
+
+  useEffect(() => {
+    fetch("https://data.cityofchicago.org/resource/ijzp-q8t2.json?$limit=500")
+      .then(res => res.json())
+      .then(data => {
+        const points = data
+          .filter(d => d.latitude && d.longitude)
+          .map(d => [parseFloat(d.latitude), parseFloat(d.longitude), 0.5]);
+        setCrimePoints(points);
+      });
+  }, []);
+
   const mapIcon = L.icon({
     iconUrl: customMapIcon,
     iconRetinaUrl: customMapIcon, 
@@ -147,6 +161,7 @@ function Map() {
   // ... the rest of your code
 
  const labelIcon = (text, cssClass) =>
+  
     L.divIcon({
       className: `campus-label ${cssClass}`, // <--- Notice the change here!
       html: `<div class="label-text">${text}</div>`,
@@ -167,6 +182,7 @@ function Map() {
           attribution='&copy; <a href="https://www.openstreetmap.org">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <Heatmap points={crimePoints} />
         <FlyToHandler target={flyTarget} markerRefs={markerRefs} />
         {alerts
           .filter(alert => alert.lat && alert.lng)

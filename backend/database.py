@@ -95,3 +95,13 @@ class database():
         results = cursor.fetchall()
         conn.close()
         return results
+
+    def get_parsed_incidents_json(self):
+        """Return all parsed incidents as a JSON-formatted string.
+
+        Useful for APIs or frontend endpoints that need a serialized version
+        of the data. This method simply calls :meth:`get_all_parsed_incidents`
+        and dumps the resulting list of dictionaries.
+        """
+        data = self.get_all_parsed_incidents()
+        return json.dumps(data)

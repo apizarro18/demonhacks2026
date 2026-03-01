@@ -228,7 +228,7 @@ function Map({ heatmapVisible }) {
       
       {/* 3. The Public Safety Button (Fixed to screen) */}
       <a 
-        href="tel:7733257777" 
+        href="tel:311" 
         style={{
           position: "fixed",
           bottom: "30px",
@@ -246,7 +246,7 @@ function Map({ heatmapVisible }) {
           fontFamily: "Arial, sans-serif"
         }}
       >
-        🚓 Call Public Safety: (773) 325-7777
+        🚓 Non emergency number: 311
       </a>
 <a 
         href="tel:911"  /* Removed the space here */

@@ -1,3 +1,6 @@
 flask
 flask-cors
 newsapi-python
+react-leaflet
+react-router-dom
+react-onesignal

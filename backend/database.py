@@ -77,3 +77,18 @@ class database():
         
         conn.close()
         return results
+
+    def get_unparsed_news(self):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT rn.id, rn.source, rn.raw_json, rn.fetched_at
+            FROM raw_news rn
+            WHERE rn.id NOT IN (
+                SELECT DISTINCT raw_news_id FROM parsed_incidents
+            )
+        """)
+        
+        results = cursor.fetchall()
+        conn.close()
+        return results

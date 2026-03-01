@@ -9,7 +9,7 @@ class database():
         load_dotenv()
 
         # The code used to reference `SQLITE_CLOUD_URL` but the environment
-        # we actually populate in `backend/env` uses `SQL_URL`.  Keep the
+        # we actually populate in `backend/.env` uses `SQL_URL`.  Keep the
         # variable name consistent for clarity.
         self.connection_string = os.getenv("SQL_URL")
 

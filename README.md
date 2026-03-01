@@ -110,7 +110,7 @@ cd backend
 pip install -r requirements.txt
 ```
 
-Create a file called `env` (or `.env`) in the `backend/` folder with:
+Create a `.env` file in the `backend/` folder with:
 ```
 SQL_URL=sqlitecloud://<user>:<pass>@<host>:<port>/<database>
 GEMINI_KEY=<your-google-gemini-api-key>

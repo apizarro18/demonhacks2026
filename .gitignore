@@ -7,7 +7,7 @@ build/
 venv/
 .env
 backend/env
-
+backend/serviceAccountKey.json
 # Node
 node_modules/
 npm-debug.log*

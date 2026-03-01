@@ -55,15 +55,44 @@ class database():
         conn.commit() 
         conn.close()
 
+    #----------------------------------------------------------------------
+    # utility helpers
+    #----------------------------------------------------------------------
+    def reset_table_sequence(self, table_name: str) -> None:
+        """Reset the AUTOINCREMENT counter for *table_name*.
+
+        SQLite keeps the last used integer key in the hidden
+        ``sqlite_sequence`` table; deleting rows does not change that value,
+        which is why gaps appear after manual deletions.  This helper removes
+        the entry for the named table so that the next ``INSERT`` will start
+        again at ``1`` (or ``MAX(rowid)+1`` if rows remain).
+
+        Usage::
+
+            db = database()
+            db.reset_table_sequence('raw_news')
+            # optionally call `VACUUM` afterwards to reclaim space
+
+        The method is idempotent and safe to call even if the table has never
+        been populated.
+        """
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "DELETE FROM sqlite_sequence WHERE name = ?",
+            (table_name,),
+        )
+        conn.commit()
+        conn.close()
+
     def insert_raw_news(self, source, raw_json):
         conn = self.get_connection()
         cursor = conn.cursor()
         
         # Pass a single tuple, not a list
         params = (source, json.dumps(raw_json))
-        cursor.execute("INSERT INTO raw_news (source, raw_json) VALUES (?, ?)", params)
-        
-        news_id = cursor.lastrowid
+        cursor.execute("INSERT INTO raw_news (source, raw_json) VALUES (?, ?) RETURNING id", params)
+        news_id = cursor.fetchone()[0]
         conn.commit()
         conn.close()
         return news_id

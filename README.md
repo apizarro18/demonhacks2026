@@ -93,7 +93,22 @@ pip install -r requirements.txt
 
 python database.py    # creates incidents.db (will load `SQL_URL`)
 python app.py         # starts Flask on http://localhost:5000
-```
+
+#
+# Resetting primary key counters
+#
+# If you manually delete rows from a table you may notice that the `id`
+# values jump (e.g. 1,2,3, then 8,9,10).  SQLite stores the last-used
+# value in `sqlite_sequence`, and it doesn't roll back on deletes.  To
+# renumber from 1 you can either drop & recreate the table or execute the
+# following SQL yourself:
+#
+#     DELETE FROM sqlite_sequence WHERE name = '<table_name>';
+#     VACUUM;                      # optional, reclaims space
+#
+# The Python-friendly way is to call the new ``reset_table_sequence``
+# helper on the ``database`` object after you build a `database` instance.
+#```
 ### Frontend
 ```bash
 cd frontend
